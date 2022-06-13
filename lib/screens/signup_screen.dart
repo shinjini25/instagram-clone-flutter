@@ -1,8 +1,16 @@
+import 'dart:typed_data';
+import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:instagram_clone/auth/auth_methods.dart';
+import 'package:instagram_clone/utils/select_img.dart';
 import '../utils/colors.dart';
+import '../utils/snackbar.dart';
 import '../widgets/textfield_input.dart';
+import 'login_screen.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -16,6 +24,9 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+  Uint8List? _image;
+
+  bool _isLoading = false;
 
 
   @override
@@ -25,6 +36,38 @@ class _SignupScreenState extends State<SignupScreen> {
     _passwordController.dispose();
     _bioController.dispose();
     _usernameController.dispose();
+  }
+//select an image function
+  void selectImage() async {
+   Uint8List img=  await pickImage(ImageSource.gallery);
+   setState(() {
+     _image = img;
+   });
+  }
+
+  void signUpUser() async {
+    setState(() {
+      _isLoading= true;
+    });
+    String res = await AuthMethods().signUpUser(
+        email: _emailController.text,
+        password: _passwordController.text,
+        username: _usernameController.text,
+        bio: _bioController.text,
+        file: _image!);
+
+    if (res !="success") {
+      // show the error
+      showSnackBar(context, res);
+    }
+    else{
+      setState(() {
+        _isLoading= false;
+      });
+    }
+  }
+  void navigateToLogin() async {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => LoginScreen() ));
   }
 
   @override
@@ -47,14 +90,11 @@ class _SignupScreenState extends State<SignupScreen> {
                     //circular widget input for accepting profile avatars
                     Stack(
                       children: [
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage('https://i.pinimg.com/474x/8f/1b/09/8f1b09269d8df868039a5f9db169a772.jpg'),
-                        ),
+                        _image != null ? CircleAvatar( radius: 50, backgroundImage: MemoryImage(_image!), ) : const CircleAvatar( radius: 64, backgroundImage: NetworkImage('https://i.stack.imgur.com/l60Hf.png'),),
                        Positioned(
                          bottom: -5,
                            left: 65,
-                           child: IconButton( onPressed: () {}, icon: const Icon(Icons.add_a_photo,)))
+                           child: IconButton( onPressed: selectImage, icon: const Icon(Icons.add_a_photo, color: Colors.black,)))
                       ],
                     ),
 
@@ -91,13 +131,15 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     SizedBox(height: 13,),
 
-                    //button login
-                    SizedBox(height: 12,),
+                    // SizedBox(height: 12,),
 
                     //login btn
                     InkWell(
+                      onTap: signUpUser,
                       child: Container(
-                        child: Text('Sign Up'),
+                        child: _isLoading ?
+                        const Center(child: CircularProgressIndicator(color: primaryColor))
+                            : Text('Sign Up'),
                         width: double.infinity,
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(vertical: 17),
@@ -121,7 +163,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                         SizedBox(width: 10,),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: navigateToLogin,
                           child: Container(
                             // child: Text("Sign up now!", style: TextStyle(fontWeight: FontWeight.bold),),
                             // padding: EdgeInsets.symmetric(vertical: 10),
