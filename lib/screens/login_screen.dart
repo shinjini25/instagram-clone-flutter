@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:instagram_clone/screens/signup_screen.dart';
 import '../auth/auth_methods.dart';
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive_layout_screen.dart';
+import '../responsive/web_screen_layout.dart';
 import '../utils/colors.dart';
 import '../utils/snackbar.dart';
 import '../widgets/textfield_input.dart';
@@ -32,15 +35,26 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     String res = await AuthMethods().loginUser(
         email: _emailController.text, password: _passwordController.text);
-    if (res == "success") {
-      showSnackBar(context, res);
-      print("success");
-    } else {
-      showSnackBar(context, res);
-    }
-    setState(() {
-      _isLoading= false;
-    });
+    if (res == "success")
+      {
+          Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
+          ),
+              (route) => false);
+
+      setState(() {
+        _isLoading = false;
+      });
+  } else {
+      setState(() {
+      _isLoading = false;
+      });
+    showSnackBar(context, res);
+  }
   }
 
 void navigateToSignUp()  {
