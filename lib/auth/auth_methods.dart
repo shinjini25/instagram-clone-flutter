@@ -12,17 +12,18 @@ class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // get user details
-  // Future<model.User> getUserDetails() async {
-  //   User currentUser = _auth.currentUser!;
-  //
-  //   DocumentSnapshot documentSnapshot =
-  //   await _firestore.collection('ig_users').doc(currentUser.uid).get();
-  //
-  //   return model.User.fromSnap(documentSnapshot);
-  // }
+  Future<model.User> getUserDetails() async {
+   User currentUser = _auth.currentUser!;
+    String userUid = currentUser.uid;
+
+    DocumentSnapshot snap = await _firestore.collection('ig-users').doc(userUid).get();
+
+    return model.User.fromSnap(snap);
+    // username= snap.get('username');
+
+  }
 
   // Signing Up User
-
   Future<String> signUpUser({
     required String email,
     required String password,
