@@ -123,7 +123,7 @@ class _AddPostScreenState extends State<AddPostScreen> {
     ): Scaffold(
       appBar: AppBar(
             backgroundColor: mobileBackgroundColor,
-            leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () {},),
+            leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: clearPostScreen ,),
               title: Text("Post to"),
             actions: [
               TextButton(onPressed: () => userPost(user.uid, user.username, user.photoUrl),
