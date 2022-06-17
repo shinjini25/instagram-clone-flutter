@@ -23,22 +23,40 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostScreenState extends State<AddPostScreen> {
 
   Uint8List? _file;
+  bool _isLoading = false;
   final TextEditingController _captionController = TextEditingController();
 
   //<!---------   FUNCTION   ---------!>
   void userPost(String uid, String username, String profImg) async{
+    setState(() {
+      _isLoading= true;
+    });
 
     try {
        String res= await PostMethods().uploadPost(_file!, _captionController.text, uid, username, profImg);
        if(res=="success"){
+         setState(() {
+           _isLoading= false;
+         });
           showSnackBar(context, 'Posted!');
+         clearPostScreen();
        }
        else{
+         setState(() {
+           _isLoading= false;
+         });
          showSnackBar(context , 'Some error occured. Try again later!');
        }
     }catch(e){
       showSnackBar(context , e.toString());
     }
+
+  }
+  //clear the post screen after the psot is succesfully done
+  void clearPostScreen() {
+    setState(() {
+      _file= null;
+    });
 
   }
 
@@ -118,6 +136,9 @@ class _AddPostScreenState extends State<AddPostScreen> {
       ),
       body: Column(
         children: [
+          _isLoading ? const LinearProgressIndicator() : Padding(padding: EdgeInsets.only(top: 0)),
+          const Divider(),
+          // SizedBox(height: 15),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
