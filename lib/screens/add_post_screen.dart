@@ -5,7 +5,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:instagram_clone/utils/select_img.dart';
 import 'package:instagram_clone/providers/user_provider.dart';
+import 'package:instagram_clone/utils/snackbar.dart';
 import 'package:provider/provider.dart';
+import '../methods/post_methods.dart';
 import '../models/user.dart' as model;
 import '../models/user.dart';
 
@@ -22,6 +24,23 @@ class _AddPostScreenState extends State<AddPostScreen> {
 
   Uint8List? _file;
   final TextEditingController _captionController = TextEditingController();
+
+  //<!---------   FUNCTION   ---------!>
+  void userPost(String uid, String username, String profImg) async{
+
+    try {
+       String res= await PostMethods().uploadPost(_file!, _captionController.text, uid, username, profImg);
+       if(res=="success"){
+          showSnackBar(context, 'Posted!');
+       }
+       else{
+         showSnackBar(context , 'Some error occured. Try again later!');
+       }
+    }catch(e){
+      showSnackBar(context , e.toString());
+    }
+
+  }
 
   _selectUpload(BuildContext context) async {
     return showDialog(context: context, builder: (context) {
@@ -61,10 +80,15 @@ class _AddPostScreenState extends State<AddPostScreen> {
               Navigator.of(context).pop();
             },
           ),
-
         ],
       );
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _captionController.dispose();
   }
 
 
@@ -84,7 +108,8 @@ class _AddPostScreenState extends State<AddPostScreen> {
             leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () {},),
               title: Text("Post to"),
             actions: [
-              TextButton(onPressed: () {}, child: const Text("Post", style: TextStyle(
+              TextButton(onPressed: () => userPost(user.uid, user.username, user.photoUrl),
+                  child: const Text("Post", style: TextStyle(
                 color: Colors.blueAccent,
                 fontWeight: FontWeight.bold,
                 fontSize: 17,
@@ -97,14 +122,14 @@ class _AddPostScreenState extends State<AddPostScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
+              const CircleAvatar(
                 backgroundImage: NetworkImage('https://images.unsplash.com/photo-1554151228-14d9def656e4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=686&q=80'),
               ),
               SizedBox(
                 width: MediaQuery.of(context).size.width*0.4,
                 child: TextField(
                   controller: _captionController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     hintText: 'Write a caption..',
                     border: InputBorder.none,
                   ),

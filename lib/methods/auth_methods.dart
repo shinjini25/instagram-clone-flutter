@@ -1,14 +1,14 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:instagram_clone/auth/storage_methods.dart';
+import 'package:instagram_clone/methods/storage_methods.dart';
 import 'package:instagram_clone/models/user.dart' as model;
 // import 'package:instagram_clone_flutter/resources/storage_methods.dart';
 
 class AuthMethods {
   //creating firestore instance for firestore database
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  //creating an auth instance
+  //creating an methods instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // get user details
@@ -37,7 +37,7 @@ class AuthMethods {
     try {
       // file != null
       if (email.isNotEmpty || password.isNotEmpty || username.isNotEmpty || bio.isNotEmpty ) {
-        // registering user in auth with email and password
+        // registering user in methods with email and password
         UserCredential cred = await _auth.createUserWithEmailAndPassword(email: email, password: password,);
 
 
