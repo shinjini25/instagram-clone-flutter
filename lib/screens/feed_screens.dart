@@ -32,7 +32,21 @@ class FeedScreen extends StatelessWidget {
 
         ],
       ),
-      body: const PostCard(),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('ig-posts').snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot<Map<String , dynamic>>> snapshot ) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+            return ListView.builder(itemCount: snapshot.data!.docs.length,  itemBuilder: (context, index) => PostCard(
+              //passing one particular doc as 'snap' to the PostCard at a time
+                snap: snapshot.data!.docs[index].data()
+             ),
+            );
+            },
+      ),
     );
   }
 }
