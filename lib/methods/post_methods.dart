@@ -15,39 +15,44 @@ import 'package:instagram_clone/models/post.dart';
 import 'package:uuid/uuid.dart';
 
 class PostMethods {
-  final FirebaseFirestore _firestore= FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   //upload post
-    Future<String> uploadPost(
-        Uint8List file,
-        String caption,
-        String uid,
-        String username,
-        String profImage
-        ) async {
-      String res= "some error occured!";
-      try{
-          String url= await StorageMethods().uploadImageToStorage('postPhotos', file, true);
-          String postId= const Uuid().v1();
+  Future<String> uploadPost(Uint8List file, String caption, String uid,
+      String username, String profImage) async {
+    String res = "some error occured!";
+    try {
+      String url =
+          await StorageMethods().uploadImageToStorage('postPhotos', file, true);
+      String postId = const Uuid().v1();
 
-          Post post = Post(
-          caption: caption,
-            uid: uid,
-            username: username,
-            postId:  postId,
-            likes: [],
-            datePublished: DateTime.now(),
-            postUrl: url,
-            profImage: profImage,
-
-          );
-          //creating a new collection 'ig-posts' to save the post model
-          _firestore.collection('ig-posts').doc(postId).set(post.toJson());
-          res= "success";
-
-      } catch(e){
-        res= e.toString();
-      }
-      return res;
+      Post post = Post(
+        caption: caption,
+        uid: uid,
+        username: username,
+        postId: postId,
+        likes: [],
+        datePublished: DateTime.now(),
+        postUrl: url,
+        profImage: profImage,
+      );
+      //creating a new collection 'ig-posts' to save the post model
+      _firestore.collection('ig-posts').doc(postId).set(post.toJson());
+      res = "success";
+    } catch (e) {
+      res = e.toString();
     }
+    return res;
+  }
 
+  // Delete Post
+  Future<String> deletePost(String postId) async {
+    String res = "Some error occurred";
+    try {
+      await _firestore.collection('ig-posts').doc(postId).delete();
+      res = 'success';
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
 }

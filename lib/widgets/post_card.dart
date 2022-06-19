@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_clone/methods/likes_methods.dart';
 import 'package:instagram_clone/utils/colors.dart';
@@ -5,22 +6,48 @@ import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:instagram_clone/screens/comments_screen.dart';
 
+import '../methods/comment_methods.dart';
+import '../methods/post_methods.dart';
+import '../utils/snackbar.dart';
 
 class PostCard extends StatefulWidget {
   final snap;
 
-  const PostCard({Key? key, required this.snap }) : super(key: key);
-
+  const PostCard({Key? key, required this.snap}) : super(key: key);
 
   @override
   State<PostCard> createState() => _PostCardState();
 }
 
 class _PostCardState extends State<PostCard> {
+  bool _isLiked = false;
+  int commentLen = 0;
+  bool containsLikes = false;
 
-  bool _isLiked= false;
-  bool containsLikes= false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getComments();
+  }
 
+  void getComments() async {
+    //get comment length
+    try {
+      QuerySnapshot<Map<String, dynamic>> querySnapshot =
+          await FirebaseFirestore.instance
+              .collection('ig-posts')
+              .doc(widget.snap['postId'])
+              .collection('comments')
+              .get();
+
+      commentLen = querySnapshot.docs.length;
+    } catch (e) {
+      showSnackBar(context, e.toString());
+    }
+
+    setState(() {});
+  }
 
   // int noOfLikes=0;
   //
@@ -37,93 +64,92 @@ class _PostCardState extends State<PostCard> {
   //   print(containsLikes);
   //   // print(_isLiked);
   // }
-void postLiked() async {
-   await LikesMethods().likePost(widget.snap['postId'], widget.snap['uid'], widget.snap['likes']);
-      setState(() {
-        _isLiked= !_isLiked;
+  void postLiked() async {
+    await LikesMethods().likePost(
+        widget.snap['postId'], widget.snap['uid'], widget.snap['likes']);
+    setState(() {
+      _isLiked = !_isLiked;
+    });
 
-      });
-
-      print(_isLiked);
+    print(_isLiked);
   }
-// @override
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   // showLikedColor();
-  // }
 
   @override
-  Widget build(BuildContext context)  {
+  Widget build(BuildContext context) {
     // showLikedColor();
     return Container(
       color: mobileBackgroundColor,
-      padding: const EdgeInsets.symmetric(vertical: 10,
+      padding: const EdgeInsets.symmetric(
+        vertical: 10,
       ),
       child: Column(
         children: [
           //top part
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16,
+            padding: const EdgeInsets.symmetric(
+              vertical: 4,
+              horizontal: 16,
             ).copyWith(right: 0),
 
             //HEADER SECTION
             child: Row(
               children: [
-                 CircleAvatar(
+                CircleAvatar(
                   radius: 20,
                   backgroundImage: NetworkImage(widget.snap['profImage']),
                 ),
                 //username
                 Expanded(
                   child: Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                        Text(widget.snap['username'], style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                         ),
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          widget.snap['username'],
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-                ),
-                IconButton(onPressed: () {
-                  showDialog( context: context, builder: (context) {
-                      return Dialog(
-                        child: ListView(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 16),
-                            shrinkWrap: true,
-                            children: [
-                              'Delete',
-                              'Report User',
-                            ].map(
-                                  (e) => InkWell(
-                                  child: Container(
-                                    padding:
-                                    const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                        horizontal: 16),
-                                    child: Text(e),
-                                  ),
-                                  onTap: () {
-                                    // deletePost(
-                                    //   widget.snap['postId']
-                                    //       .toString(),
-                                    // );
-                                    // // remove the dialog box
-                                    // Navigator.of(context).pop();
-                                  }),
-                            ).toList()),
-                      );
-                    },
-                  );
-                },
-                    icon: Icon(Icons.more_vert),
+                IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: ListView(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shrinkWrap: true,
+                              children: [
+                                'Delete',
+                              ]
+                                  .map(
+                                    (e) => InkWell(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 12, horizontal: 16),
+                                        child: Text(e),
+                                      ),
+                                      onTap: () {
+                                        PostMethods()
+                                            .deletePost(widget.snap['postId']);
+                                        Navigator.of(context).pop();
+                                      },
+                                      // // remove the dialog box
+                                      // Navigator.of(context).pop();
+                                    ),
+                                  )
+                                  .toList()),
+                        );
+                      },
+                    );
+                  },
+                  icon: Icon(Icons.more_vert),
                 ),
               ],
             ),
@@ -132,11 +158,9 @@ void postLiked() async {
           //IMAGE SECTION
           Container(
             padding: EdgeInsets.symmetric(horizontal: 2),
-            height: MediaQuery.of(context).size.height*0.4,
+            height: MediaQuery.of(context).size.height * 0.4,
             width: double.infinity,
-            child: Image.network(widget.snap['postUrl'],
-                fit: BoxFit.cover
-            ),
+            child: Image.network(widget.snap['postUrl'], fit: BoxFit.cover),
           ),
 
           //LIKE COMMENT SEC
@@ -144,23 +168,35 @@ void postLiked() async {
             children: [
               Expanded(
                 child: Row(
-                    children: [
-                      Padding(padding: EdgeInsets.only(left: 4)),
-                      IconButton(onPressed: postLiked, icon: Icon(Icons.favorite,  color: _isLiked ? Colors.redAccent : Colors.white,)),
-                      IconButton(onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => CommentScreen(),)), icon: Icon(Icons.comment_outlined)),
-                      IconButton(onPressed: () {}, icon: Icon(Icons.send))
-                    ],
-                   ),
+                  children: [
+                    Padding(padding: EdgeInsets.only(left: 4)),
+                    IconButton(
+                        onPressed: postLiked,
+                        icon: Icon(
+                          Icons.favorite,
+                          color: _isLiked ? Colors.redAccent : Colors.white,
+                        )),
+                    IconButton(
+                        onPressed: () =>
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => CommentScreen(
+                                snap: widget.snap,
+                              ),
+                            )),
+                        icon: Icon(Icons.comment_outlined)),
+                    IconButton(onPressed: () {}, icon: Icon(Icons.send))
+                  ],
+                ),
               ),
               Expanded(
-                child: Align( alignment: Alignment.bottomRight,
-                    child:  IconButton(onPressed: () {}, icon: Icon(Icons.bookmark_border)),
-                    ),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: IconButton(
+                      onPressed: () {}, icon: Icon(Icons.bookmark_border)),
+                ),
               )
-
             ],
           ),
-
 
           //CAPTION AND NUMBER OF LIKES
           Container(
@@ -171,7 +207,8 @@ void postLiked() async {
               children: [
                 //1st col
                 Text(
-                  '${widget.snap['likes'].length} likes', style: Theme.of(context).textTheme.bodyText2,
+                  '${widget.snap['likes'].length} likes',
+                  style: Theme.of(context).textTheme.bodyText2,
                 ),
                 //2nd col
                 Container(
@@ -181,21 +218,27 @@ void postLiked() async {
                     text: TextSpan(
                       style: TextStyle(color: primaryColor),
                       children: <TextSpan>[
-                        TextSpan(text: widget.snap['username'], style: TextStyle(fontWeight: FontWeight.bold,)),
-                        TextSpan(text: ' ${widget.snap['caption']}',),
-
+                        TextSpan(
+                            text: widget.snap['username'],
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                            )),
+                        TextSpan(
+                          text: ' ${widget.snap['caption']}',
+                        ),
                       ],
                     ),
                   ),
-
                 ),
                 //3rd col
                 InkWell(
                   onTap: () {},
                   child: Container(
-                    child: const Padding(
-                      padding: EdgeInsets.only(top: 6),
-                      child: Text("View all 250 comments", style: TextStyle(color: secondaryColor),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Text(
+                        'View all ${commentLen} comments',
+                        style: const TextStyle(color: secondaryColor),
                       ),
                     ),
                   ),
@@ -203,11 +246,13 @@ void postLiked() async {
 
                 //4th col
                 Container(
-                  child:  Padding(
+                  child: Padding(
                     padding: EdgeInsets.only(top: 4),
                     child: Text(
-                        DateFormat.yMMMd().format(widget.snap['datePublished'].toDate()),
-                    style: TextStyle(color: secondaryColor, fontSize: 12),
+                      DateFormat.yMMMd()
+                          .format(widget.snap['datePublished'].toDate()),
+                      style:
+                          const TextStyle(color: secondaryColor, fontSize: 12),
                     ),
                   ),
                 ),
