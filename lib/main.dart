@@ -11,25 +11,33 @@ import 'package:instagram_clone/screens/signup_screen.dart';
 
 import 'package:instagram_clone/utils/colors.dart';
 import 'package:provider/provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // initialise app based on platform- web or mobile
   if (kIsWeb) {
+    //config for web
     await Firebase.initializeApp(
       options: const FirebaseOptions(
-          apiKey: "AIzaSyCU22DWc7IbRICmPO6ndHHitjpNdRw6us",
-          appId: "1:653486519476:web:d69b140b99993e86ea93e1",
-          messagingSenderId: "653486519476",
+          apiKey: "AIzaSyCU22DWc7IbRICmPO6ndHHitjpNdRw6us8",
           projectId: "flutter-instagram-clone-32dee",
-          storageBucket: 'flutter-instagram-clone-32dee.firebaseapp.com'
-      ),
+          storageBucket: "flutter-instagram-clone-32dee.appspot.com",
+          messagingSenderId: "653486519476",
+          appId: "1:653486519476:web:d69b140b99993e86ea93e1"),
     );
   } else {
-    await Firebase.initializeApp();
+    //for mobile
+    await Firebase.initializeApp(
+      options: const FirebaseOptions(
+          apiKey: "AIzaSyCU22DWc7IbRICmPO6ndHHitjpNdRw6us8",
+          appId: "1:653486519476:android:1e9a5f5423fb41c9ea93e1",
+          messagingSenderId: "653486519476",
+          projectId: "flutter-instagram-clone-32dee",
+          storageBucket: 'flutter-instagram-clone-32dee.firebaseapp.com'),
+    );
   }
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -39,15 +47,16 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider(),),
+        ChangeNotifierProvider(
+          create: (_) => UserProvider(),
+        ),
       ],
       child: MaterialApp(
         title: 'Flutter Instagram clone',
-        theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: mobileBackgroundColor
-        ),
+        theme: ThemeData.dark()
+            .copyWith(scaffoldBackgroundColor: mobileBackgroundColor),
         // home: LoginScreen(),
-      // );
+        // );
 
         home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
@@ -81,4 +90,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
