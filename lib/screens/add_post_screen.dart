@@ -57,6 +57,13 @@ class _AddPostScreenState extends State<AddPostScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _captionController.dispose();
+  }
+
   _selectUpload(BuildContext context) async {
     return showDialog(
         context: context,
@@ -104,12 +111,6 @@ class _AddPostScreenState extends State<AddPostScreen> {
             ],
           );
         });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _captionController.dispose();
   }
 
   @override
