@@ -19,6 +19,7 @@ void main() async {
   if (kIsWeb) {
     //config for web
     await Firebase.initializeApp(
+      name: 'flutter-instagram-clone',
       options: const FirebaseOptions(
           apiKey: "AIzaSyCU22DWc7IbRICmPO6ndHHitjpNdRw6us8",
           projectId: "flutter-instagram-clone-32dee",
@@ -29,6 +30,7 @@ void main() async {
   } else {
     //for mobile
     await Firebase.initializeApp(
+      name: 'flutter-instagram-clone',
       options: const FirebaseOptions(
           apiKey: "AIzaSyCU22DWc7IbRICmPO6ndHHitjpNdRw6us8",
           appId: "1:653486519476:android:1e9a5f5423fb41c9ea93e1",

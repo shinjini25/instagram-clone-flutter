@@ -46,7 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       // get post length
       var postSnap = await FirebaseFirestore.instance
           .collection('ig-posts')
-          .where('uid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .where('uid', isEqualTo: widget.uid)
           .get();
 
       postLen = postSnap.docs.length;

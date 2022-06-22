@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/methods/auth_methods.dart';
 import 'package:instagram_clone/utils/select_img.dart';
 import '../utils/colors.dart';
+import '../utils/global_variables.dart';
 import '../utils/snackbar.dart';
 import '../widgets/textfield_input.dart';
 import 'login_screen.dart';
@@ -76,7 +77,10 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
         body: SafeArea(
             child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 32),
+                padding: MediaQuery.of(context).size.width > webScreenSize
+                    ? EdgeInsets.symmetric(
+                        horizontal: MediaQuery.of(context).size.width / 3)
+                    : EdgeInsets.symmetric(horizontal: 32),
                 width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -102,12 +106,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                     'https://i.stack.imgur.com/l60Hf.png'),
                               ),
                         Positioned(
-                            bottom: -1,
-                            left: 39,
+                            bottom: 5,
+                            left: 37,
                             child: IconButton(
                                 onPressed: selectImage,
                                 icon: const Icon(
-                                  Icons.add_a_photo,
+                                  Icons.add_photo_alternate_rounded,
                                   color: Colors.black,
                                   size: 35,
                                 )))
@@ -209,9 +213,16 @@ class _SignupScreenState extends State<SignupScreen> {
                         GestureDetector(
                           onTap: navigateToLogin,
                           child: Container(
-                              // child: Text("Sign up now!", style: TextStyle(fontWeight: FontWeight.bold),),
-                              // padding: EdgeInsets.symmetric(vertical: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Row(children: const [
+                              Icon(Icons.arrow_back_ios_new,
+                                  color: Colors.white),
+                              Text(
+                                "Back to Login Page",
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
+                            ]),
+                          ),
                         ),
                       ],
                     ),

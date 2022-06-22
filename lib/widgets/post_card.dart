@@ -5,9 +5,12 @@ import 'package:instagram_clone/utils/colors.dart';
 import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 import 'package:instagram_clone/screens/comments_screen.dart';
-
+import 'package:provider/provider.dart';
+import '../models/user.dart' as model;
 import '../methods/comment_methods.dart';
 import '../methods/post_methods.dart';
+import '../providers/user_provider.dart';
+import '../utils/global_variables.dart';
 import '../utils/snackbar.dart';
 
 class PostCard extends StatefulWidget {
@@ -45,25 +48,11 @@ class _PostCardState extends State<PostCard> {
     } catch (e) {
       showSnackBar(context, e.toString());
     }
-
-    setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  // int noOfLikes=0;
-  //
-  // void showLikedColor() async {
-  //   print("INIT CALLED");
-  //   int likes= await LikesMethods().numberOfLikes(widget.snap['likes']);
-  //
-  //   if(likes >0){
-  //     setState(() {
-  //       containsLikes= true;
-  //     });
-  //   }
-  //   print("LETS CHECK");
-  //   print(containsLikes);
-  //   // print(_isLiked);
-  // }
   void postLiked() async {
     await LikesMethods().likePost(
         widget.snap['postId'], widget.snap['uid'], widget.snap['likes']);
@@ -76,9 +65,19 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    final model.User user = Provider.of<UserProvider>(context).getUser;
+    final width = MediaQuery.of(context).size.width;
+
     // showLikedColor();
     return Container(
-      color: mobileBackgroundColor,
+      decoration: BoxDecoration(
+          border: Border.all(
+            color:
+                width > webScreenSize ? secondaryColor : mobileBackgroundColor,
+          ),
+          borderRadius: width > webScreenSize
+              ? BorderRadius.all(Radius.circular(8))
+              : BorderRadius.all(Radius.circular(0))),
       padding: const EdgeInsets.symmetric(
         vertical: 10,
       ),
