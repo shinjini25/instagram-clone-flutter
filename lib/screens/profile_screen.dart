@@ -76,8 +76,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               title: Text(userData['username']),
               actions: <Widget>[
                 IconButton(
-                    onPressed: AuthMethods().signOut,
-                    icon: Icon(
+                    onPressed: () => AuthMethods().signOut(context),
+                    icon: const Icon(
                       Icons.logout_rounded,
                       color: Colors.white,
                     ))

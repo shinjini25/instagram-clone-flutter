@@ -118,11 +118,26 @@ class _AddPostScreenState extends State<AddPostScreen> {
     final User user = Provider.of<UserProvider>(context).getUser;
 
     return _file == null
-        ? Center(
-            child: IconButton(
-            icon: const Icon(Icons.upload),
-            onPressed: () => _selectUpload(context),
-          ))
+        ? Container(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                //text
+                Text("Create a new Post",
+                    style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+                SizedBox(height: 8),
+                //uplaod btn
+                Center(
+                    child: IconButton(
+                  icon: const Icon(
+                    Icons.upload,
+                    size: 50,
+                  ),
+                  onPressed: () => _selectUpload(context),
+                )),
+              ]))
         : Scaffold(
             appBar: AppBar(
               backgroundColor: mobileBackgroundColor,

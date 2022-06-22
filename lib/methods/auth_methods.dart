@@ -1,8 +1,12 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:instagram_clone/methods/storage_methods.dart';
 import 'package:instagram_clone/models/user.dart' as model;
+
+import '../screens/login_screen.dart';
 // import 'package:instagram_clone_flutter/resources/storage_methods.dart';
 
 class AuthMethods {
@@ -13,14 +17,14 @@ class AuthMethods {
 
   // get user details
   Future<model.User> getUserDetails() async {
-   User currentUser = _auth.currentUser!;
+    User currentUser = _auth.currentUser!;
     String userUid = currentUser.uid;
 
-    DocumentSnapshot snap = await _firestore.collection('ig-users').doc(userUid).get();
+    DocumentSnapshot snap =
+        await _firestore.collection('ig-users').doc(userUid).get();
 
     return model.User.fromSnap(snap);
     // username= snap.get('username');
-
   }
 
   // Signing Up User
@@ -32,17 +36,22 @@ class AuthMethods {
     // profile photo
     required Uint8List file,
   }) async {
-
     String res = "Some error Occurred";
     try {
       // file != null
-      if (email.isNotEmpty || password.isNotEmpty || username.isNotEmpty || bio.isNotEmpty ) {
+      if (email.isNotEmpty ||
+          password.isNotEmpty ||
+          username.isNotEmpty ||
+          bio.isNotEmpty) {
         // registering user in methods with email and password
-        UserCredential cred = await _auth.createUserWithEmailAndPassword(email: email, password: password,);
-
+        UserCredential cred = await _auth.createUserWithEmailAndPassword(
+          email: email,
+          password: password,
+        );
 
         //upload all the details to firestore database
-        String photoUrl = await StorageMethods().uploadImageToStorage('profilePics', file, false);
+        String photoUrl = await StorageMethods()
+            .uploadImageToStorage('profilePics', file, false);
 
         //to db
         model.User _user = model.User(
@@ -54,8 +63,10 @@ class AuthMethods {
           followers: [],
           following: [],
         );
-        await _firestore.collection('ig-users').doc(cred.user!.uid).set(_user.toJson());
-
+        await _firestore
+            .collection('ig-users')
+            .doc(cred.user!.uid)
+            .set(_user.toJson());
       } else {
         res = "Please enter all the fields first";
       }
@@ -88,7 +99,10 @@ class AuthMethods {
     return res;
   }
 
-  Future<void> signOut() async {
+  Future<void> signOut(BuildContext context) async {
     await _auth.signOut();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => LoginScreen(),
+    ));
   }
 }

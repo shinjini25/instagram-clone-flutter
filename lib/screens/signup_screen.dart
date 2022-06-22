@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:typed_data';
 import 'dart:io';
 import 'dart:async';
@@ -7,6 +9,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instagram_clone/methods/auth_methods.dart';
 import 'package:instagram_clone/utils/select_img.dart';
+import '../responsive/mobile_screen_layout.dart';
+import '../responsive/responsive_layout_screen.dart';
+import '../responsive/web_screen_layout.dart';
 import '../utils/colors.dart';
 import '../utils/global_variables.dart';
 import '../utils/snackbar.dart';
@@ -61,9 +66,18 @@ class _SignupScreenState extends State<SignupScreen> {
       // show the error
       showSnackBar(context, res);
     } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => const ResponsiveLayout(
+              mobileScreenLayout: MobileScreenLayout(),
+              webScreenLayout: WebScreenLayout(),
+            ),
+          ),
+          (route) => false);
       setState(() {
         _isLoading = false;
       });
+      // navigateToLogin();
     }
   }
 
@@ -107,20 +121,33 @@ class _SignupScreenState extends State<SignupScreen> {
                               ),
                         Positioned(
                             bottom: 5,
-                            left: 37,
+                            left: 40,
                             child: IconButton(
                                 onPressed: selectImage,
                                 icon: const Icon(
-                                  Icons.add_photo_alternate_rounded,
+                                  // Icons.add_photo_alternate_rounded,
+                                  Icons.add_outlined,
                                   color: Colors.black,
-                                  size: 35,
+                                  size: 45,
                                 )))
                       ],
                     ),
 
                     const SizedBox(
-                      height: 15,
+                      height: 8,
                     ),
+
+                    SizedBox(
+                      child: Center(
+                        child: Text(
+                            "Click on the add icon button above to add your profile picture",
+                            style: TextStyle(color: Colors.grey, fontSize: 13)),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+
                     //text field input for username
                     SizedBox(
                       height: 37,
