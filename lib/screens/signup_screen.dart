@@ -66,18 +66,19 @@ class _SignupScreenState extends State<SignupScreen> {
       // show the error
       showSnackBar(context, res);
     } else {
-      Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(
-            builder: (context) => const ResponsiveLayout(
-              mobileScreenLayout: MobileScreenLayout(),
-              webScreenLayout: WebScreenLayout(),
-            ),
-          ),
-          (route) => false);
+      // Navigator.of(context).pushAndRemoveUntil(
+      //     MaterialPageRoute(
+      //       builder: (context) => const ResponsiveLayout(
+      //         mobileScreenLayout: MobileScreenLayout(),
+      //         webScreenLayout: WebScreenLayout(),
+      //       ),
+      //     ),
+      //     (route) => false);
       setState(() {
         _isLoading = false;
       });
-      // navigateToLogin();
+      showSnackBar(context, res);
+      navigateToLogin();
     }
   }
 
@@ -137,7 +138,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       height: 8,
                     ),
 
-                    SizedBox(
+                    const SizedBox(
                       child: Center(
                         child: Text(
                             "Click on the add icon button above to add your profile picture",

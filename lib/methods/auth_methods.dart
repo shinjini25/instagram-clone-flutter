@@ -67,6 +67,7 @@ class AuthMethods {
             .collection('ig-users')
             .doc(cred.user!.uid)
             .set(_user.toJson());
+        res = "success";
       } else {
         res = "Please enter all the fields first";
       }
@@ -99,10 +100,7 @@ class AuthMethods {
     return res;
   }
 
-  Future<void> signOut(BuildContext context) async {
+  Future<void> signOut() async {
     await _auth.signOut();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => LoginScreen(),
-    ));
   }
 }

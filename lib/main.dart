@@ -19,7 +19,7 @@ void main() async {
   if (kIsWeb) {
     //config for web
     await Firebase.initializeApp(
-      name: 'flutter-instagram-clone',
+      // name: 'flutter-instagram-clone',
       options: const FirebaseOptions(
           apiKey: "AIzaSyCU22DWc7IbRICmPO6ndHHitjpNdRw6us8",
           projectId: "flutter-instagram-clone-32dee",
@@ -38,6 +38,7 @@ void main() async {
           projectId: "flutter-instagram-clone-32dee",
           storageBucket: 'flutter-instagram-clone-32dee.firebaseapp.com'),
     );
+    FirebaseAuth.instance.signOut();
   }
   runApp(const MyApp());
 }

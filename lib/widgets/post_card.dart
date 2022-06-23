@@ -115,41 +115,46 @@ class _PostCardState extends State<PostCard> {
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (context) {
-                        return Dialog(
-                          child: ListView(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shrinkWrap: true,
-                              children: [
-                                'Delete',
-                              ]
-                                  .map(
-                                    (e) => InkWell(
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 12, horizontal: 16),
-                                        child: Text(e),
-                                      ),
-                                      onTap: () {
-                                        PostMethods()
-                                            .deletePost(widget.snap['postId']);
-                                        Navigator.of(context).pop();
-                                      },
-                                      // // remove the dialog box
-                                      // Navigator.of(context).pop();
-                                    ),
-                                  )
-                                  .toList()),
-                        );
-                      },
-                    );
-                  },
-                  icon: Icon(Icons.more_vert),
-                ),
+                widget.snap['uid'].toString() == user.uid
+                    ? IconButton(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                child: ListView(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16),
+                                    shrinkWrap: true,
+                                    children: [
+                                      'Delete',
+                                    ]
+                                        .map(
+                                          (e) => InkWell(
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12,
+                                                      horizontal: 16),
+                                              child: Text(e),
+                                            ),
+                                            onTap: () {
+                                              PostMethods().deletePost(
+                                                  widget.snap['postId']);
+                                              Navigator.of(context).pop();
+                                            },
+                                            // // remove the dialog box
+                                            // Navigator.of(context).pop();
+                                          ),
+                                        )
+                                        .toList()),
+                              );
+                            },
+                          );
+                        },
+                        icon: Icon(Icons.more_vert),
+                      )
+                    : Container(),
               ],
             ),
           ),
