@@ -6,10 +6,10 @@ Firebase Core, Firebase Authentication, Firebase Firestore, Firebase Storage.
 
 ### Main functionalities:  ###
 </br>
-Feed screen- posts are fetched from Firebase in real-time. User can also like the post and comment on it which is displayed in the commen screen immediately. </br>
+Feed screen- posts are fetched from Firebase in real-time. Users can also like the post and comment on it which is displayed in the comment screen immediately. </br>
 Search user/explore page- posts are shown in a staggered view and the user can look up other users and then go to their profile page.</br>
-Post screen- user can upload image from gallery or click a picture and write captiion for the post and upload it. </br>
-profile page- user can see their following and follower statistics and their number of posts. All the posts by that user is displayed in the profile page.</br>
+Post screen- user can upload an image from gallery or click a picture and write a caption for the post and upload it. </br>
+profile page- user can see their following and follower statistics and their number of posts. All the posts by that user are displayed on the profile page.</br>
 
 #### Feed screen view ####
 
