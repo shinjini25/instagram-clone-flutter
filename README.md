@@ -1,11 +1,11 @@
 
 Instagram clone app having a minimalistic UI, developed using Firebase and Flutter (^3.1). 
 
-##### Firebase services used- ####
+#### Firebase services used- ####
 Firebase Core, Firebase Authentication, Firebase Firestore, Firebase Storage.
+</br/>
 
 ### Main functionalities:  ###
-</br>
 Feed screen- posts are fetched from Firebase in real-time. Users can also like the post and comment on it which is displayed in the comment screen immediately. </br>
 Search user/explore page- posts are shown in a staggered view and the user can look up other users and then go to their profile page.</br>
 Post screen- user can upload an image from gallery or click a picture and write a caption for the post and upload it. </br>
